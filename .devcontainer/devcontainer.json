@@ -11,11 +11,10 @@
 	// "features": {},
 
 	// Use 'forwardPorts' to make a list of ports inside the container available locally.
-	// "forwardPorts": [],
+	// "forwardPorts": []
 
 	// Use 'postCreateCommand' to run commands after the container is created.
-	"postCreateCommand": "curl -LsSf https://astral.sh/uv/install.sh | sh",
-
+	"postCreateCommand": "curl -LsSf https://astral.sh/uv/install.sh | sh"
 
 	// Configure tool-specific properties.
 	// "customizations": {},

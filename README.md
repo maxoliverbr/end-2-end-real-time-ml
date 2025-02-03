@@ -1,10 +1,9 @@
-# Let's build a real time fraud detection system
+# Let's build a real time fraud detection system with TurboML
 
-- Feature pipeline
-- Training pipeline
-- Deployment pipeline
 
-## Steps
+
+## TODOs
 
 - [ ] Install turbo ml inside a Linux dev container
-- [ ] 
+- [ ] Model training service
+- [ ] Live data generation service
