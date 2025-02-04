@@ -19,16 +19,11 @@ def setup_model(
     transactions_dataset_name: str,
     labels_dataset_name: str,
 ):
-    logger.info('Connect to transactions and labels dataset')
-
     # Get the transactions and labels datasets from TurboML platform
-    # Maybe something along these lines
-    # I need help with this part :-)
-    #   logger.info(f"Connect to transactions dataset {transactions_dataset_name}")
-    #   transactions = tb.OnlineDataset.get_model_inputs(id=transactions_dataset_name)
-    #   logger.info(f"Connect to labels dataset {labels_dataset_name}")
-    #   labels = tb.OnlineDataset.get_model_labels(id=labels_dataset_name)
-    breakpoint()
+    logger.info(f"Connect to transactions dataset {transactions_dataset_name}")
+    transactions = tb.OnlineDataset.load(dataset_id=transactions_dataset_name)
+    logger.info(f"Connect to labels dataset {labels_dataset_name}")
+    labels = tb.OnlineDataset.load(dataset_id=labels_dataset_name)
     
     # Define the model
     model = tb.HoeffdingTreeClassifier(n_classes=2)
@@ -46,7 +41,6 @@ def setup_model(
         "transactionAmount",
         "localHour",
         "my_sum_feat",
-        "my_sql_feat",
     ]
     categorical_fields = [
         "digitalItemCount",
@@ -60,7 +54,7 @@ def setup_model(
     label = labels.get_model_labels(label_field="is_fraud")
 
     logger.info(f"Deploy model {model_name} to platform")
-    deployed_model_htc = model.deploy(model_name, input=features, labels=label)
+    deployed_model = model.deploy(model_name, input=features, labels=label)
     logger.info(f"Deployment of {model_name} completed!")
 
 

@@ -14,15 +14,15 @@
 	// "forwardPorts": []
 
 	// Use 'postCreateCommand' to run commands after the container is created.
-	// "postCreateCommand": "curl -LsSf https://astral.sh/uv/install.sh | sh"
+	// "postCreateCommand": "curl -LsSf https://astral.sh/uv/install.sh | sh",
 	"postCreateCommand": "cat requirements.txt | xargs -n 1 pixi add",
 
 	// Configure tool-specific properties.
 	"customizations": {
 		"vscode": {
-		"extensions": [
-			"ms-python.python"
-		]
+			"extensions": [
+				"ms-python.python"
+			]
 		}
 	}
 
