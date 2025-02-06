@@ -3,10 +3,15 @@ feature-pipeline:
 
 model:
 	python setup_model.py
-	
+
+live-data:
+	python generate_live_data.py
+
+all: feature-pipeline model live-data
+
 check-turbo-ml-installation:
 	@echo "Checking import turboml_installer works"
-	uv run python -c "import turboml_installer"
+	python -c "import turboml_installer"
 
 	@echo "Checking import turboml works"
-	uv run python -c "import turboml"
+	python -c "import turboml"

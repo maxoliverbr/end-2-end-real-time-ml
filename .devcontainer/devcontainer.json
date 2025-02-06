@@ -3,7 +3,7 @@
 {
 	"name": "Python 3",
 	// Or use a Dockerfile or Docker Compose file. More info: https://containers.dev/guide/dockerfile
-	"image": "turbomlinc/turboml-sdk-devcontainer:0.0.11.1",
+	"image": "turbomlinc/turboml-sdk-devcontainer:0.1.6",
 
 	"runArgs": ["--platform=linux/amd64"],
 

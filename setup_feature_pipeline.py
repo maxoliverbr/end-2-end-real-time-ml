@@ -1,15 +1,14 @@
-import os
 from typing import Optional
 
 import turboml as tb
 from loguru import logger
-from dotenv import load_dotenv
+
+from config import config
 
 # Establish connection to TurboML platform
-load_dotenv()
 tb.init(
-    backend_url=os.environ['TURBOML_BACKEND_URL'],
-    api_key=os.environ['TURBOML_API_KEY']
+    backend_url=config.turboml_backend_url,
+    api_key=config.turboml_api_key,
 )
 
 def create_datasets(
@@ -36,8 +35,8 @@ def create_datasets(
 
     if n_samples is not None:
         logger.info(f"Subsample datasets to have {n_samples} samples")
-        transactions_df = transactions_df.sample(n=n_samples, random_state=42)
-        labels_df = labels_df.loc[transactions_df.index]
+        transactions_df = transactions_df.head(n_samples)
+        labels_df = labels_df.head(n_samples)
 
     logger.info(f'transactons_df has {len(transactions_df)} rows')
     logger.info(f'labels_df has {len(labels_df)} rows')
@@ -60,6 +59,17 @@ def create_datasets(
 
     return transactions, labels
 
+def get_feature_names(transactions: tb.OnlineDataset) -> list[str]:
+    """
+    Returns list of materialized feature names for the given `transactions` dataset.
+
+    Args:
+        - transactions (tb.OnlineDataset): TurboML OnlineDataset object for transactions
+
+    Returns:
+        - list[str]: List of materialized feature names
+    """
+    return transactions.feature_engineering.get_materialized_features().columns.tolist()
 
 def define_feature_engineering(
     transactions: tb.OnlineDataset, 
@@ -73,10 +83,14 @@ def define_feature_engineering(
     transactions.feature_engineering.register_timestamp(
         column_name="timestamp", format_type="epoch_seconds"
     )
-
+    
     # Add feature definitions to the dataset, that will be used by the TurboML platform
     # to generate ML model features in real time from the datasets
     # In this case, a time-window aggregation feature is created, with total transaction volume
+    if "my_sum_feat" in get_feature_names(transactions):
+        logger.info('Feature "my_sum_feat" already existed in the dataset. Nothing to do')
+        return
+    
     logger.info('Add feature definitions to the dataset.')
     transactions.feature_engineering.create_aggregate_features(
         column_to_operate="transactionAmount",
@@ -88,23 +102,18 @@ def define_feature_engineering(
         window_unit="hours",
     )
 
-    sample_of_features = transactions.feature_engineering.get_local_features().head(10)
-    logger.info(f'Sample of features: {sample_of_features}')
-
     # Submit these feature definitions to the TurboML platform so that this can be
     # computed continously for the input data stream.
     logger.info("Submit materialization job to the platform")
     transactions.feature_engineering.materialize_features(["my_sum_feat"])
+    
 
 if __name__ == '__main__':
     
     transactions, labels = create_datasets(
-        transactions_dataset_name="qs_transactions",
-        labels_dataset_name="qs_transaction_labels",
+        transactions_dataset_name=config.transactions_dataset_name,
+        labels_dataset_name=config.labels_dataset_name,
         n_samples=100,
     )
 
     define_feature_engineering(transactions)
-
-
-
