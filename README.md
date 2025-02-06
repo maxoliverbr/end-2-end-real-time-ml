@@ -1,5 +1,5 @@
 <div align="center">
-    <h1>Let's build an end-2-end real time fraud detection system</h1>
+    <h1>Let's build an end-2-end real time ML system</h1>
     <h3><i>"If I have seen further it is by standing on the shoulders of <s>Giants</s> <a href="https://turboml.com/">TurboML</a>"</i></h3>
 <h4>― Isaac Newton</h4>
 <img src="./media/newton.png" width='250' />
@@ -36,19 +36,23 @@ the transaction is legitimate.
 Behind the scenes, your credit card issuer (e.g. Visa, Mastercard, etc.) runs a modular real time ML system, that
 
 1. Ingests the transaction data
+
     <img src="./media/step_1_ingest_raw_data.png" width='500' />
 
 2. Enriches the data with additional features (aka feature engineering).
+
     <img src="./media/step_2_feature_engineering.png" width='500' />
 
 3. Pipes these feature into a Machine Learning model. In this case, a classification model that outputs a fraud score. If the score
 is above a certain threshold, the transaction is flagged as a fraud.
+
     <img src="./media/step_3_scoring_with_model.png" width='500' />
 
 4. Serves these scores and flags to downstream services, so they can act accordingly, for example:
     - Block the transaction
     - Ban the card
     - Send an SMS alert to the user
+    
     <img src="./media/step_4_serving_scores.png" width='500' />
 
 The system is modular, so different feature engineering logic and models can be applied for the same incoming data.
