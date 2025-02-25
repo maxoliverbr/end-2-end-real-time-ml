@@ -9,7 +9,7 @@ class Config(BaseSettings):
 
     transactions_dataset_name: str = "qs_transactions"
     labels_dataset_name: str = "qs_transaction_labels"
-    model_name: str = "fraud_detection_model_3"
+    model_name: str = "fraud_detection_model"
 
     # secrets
     turboml_backend_url: str

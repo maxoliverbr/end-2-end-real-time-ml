@@ -7,15 +7,17 @@
 
 ### Table of contents
 
-- [What's in this repository?](#whats-in-this-repository)
+- [What is this repo about?](#what-is-this-repo-about)
 - [The problem](#the-problem)
 - [The solution](#the-solution)
-- [Hands-on example](#hands-on-example)
-- [Next steps](#next-steps)
+- [Steps](#steps)
+    - [Next steps](#next-steps)
+- [Wanna learn more Real World ML/MLOps?](#wanna-learn-more-real-world-mlmlops)
 
-## What's in this repository?
+## What is this repo about?
 
-In this repository you will find an end-2-end example of a real time ML system to predict credit card fraud.
+In this repository you will find an end-2-end example of a real time ML system to predict credit card fraud, built on top of the **[TurboML platform](https://turboml.com/)**.
+
 Feel free to adjust it to your own use case
 
 * crypto price prediction
@@ -23,17 +25,14 @@ Feel free to adjust it to your own use case
 * anomaly detection, or
 * whatever problem that needs ML models to quickly adapt to changing patterns
 
-leveraging the power of the [TurboML platform](https://turbo.ml).
-
 Let's dive in!
 
 
 ## The problem
 
-Every time your credit card is used online by someone (hopefully you), your card issuer has to check whether
-the transaction is legitimate.
+Every time your credit card is used online by someone (hopefully you), your card issuer has to check whether the transaction is legitimate.
 
-Behind the scenes, your credit card issuer (e.g. Visa, Mastercard, etc.) runs a modular real time ML system, that
+Behind the scenes, your credit card issuer (e.g. Visa, Mastercard, etc.) runs a real time ML system, that
 
 1. Ingests the transaction data
 
@@ -64,25 +63,18 @@ This way their internal Data Science teams can do things like:
 - Monitor the model performance over time
 - Retrain the model incrementally on new data, to quickly adapt to changing fraud patterns.
 
-But the thing is, building the underlying platform that supports these workflows is no piece of cake.
+But the thing is, building the underlying MLOps platform that supports these workflows is no piece of cake.
 
-It requires a lot of infrastructure to be setup and maintained, like:
+So the question is:
+> How do you build a production-ready ML system, without having to build from scratch such a platform?
 
-- Real-time data processing with Spark/Flink/Quix Streams/Bytewax.
-- Model
+And here is when TurboML comes to the rescue!
 
-
-
-So the question is: how do you build a production-ready ML system, without having to hire 100 engineers?
-
-Let me show you!
 
 ## The solution
 
-
-
-We will build on top of Turbo ML, a real time ML platform that allows you to quickly
-build production-ready ML systems.
+We will build on top of [Turbo ML](https://turboml.com/), a real time ML platform that allows you to quickly
+build production-ready real time ML systems.
 
 The idea is simple (and brilliant).
 
@@ -96,41 +88,184 @@ and TurboML handles all the infrastructure and low-level details to bring this l
 So you go from idea to production at light speed.
 
 
-## Hands-on example
-All the source code snipets in this section are from this repository.
+## Steps
 
-### 0. Set up the development environment
+### 1. Install the tools
 
-We will use a devcontainer to encapsulate a reproducible development environment.
+These are the tools you will need to follow the hands-on example:
 
-This [devcontainer](./devcontainer/devcontainer.json) is a Linux container based on an official Docker image built by the TurboML team,
-that comes with the TurboML Python SDK pre-installed.
-
-To use devcontainers, you will need:
-
-- A code editor compatible with devcontainers, like [VSCode](https://code.visualstudio.com/) together with
-the [Dev Containers extension](https://code.visualstudio.com/docs/remote/containers)
 - [Docker](https://docs.docker.com/desktop/) to spin up Docker containers on your machine
+- [VSCode](https://code.visualstudio.com/) to open the repository, or any other IDE that supports devcontainers.
+- [Dev Containers extension](https://code.visualstudio.com/docs/remote/containers) to open the repository in a devcontainer
 
 
-Once you have these tools installed, you
+### 2. Set up the development environment
 
-- git clone this repository
-- open this source code with VSCode
-- run the command palette (Ctrl+Shift+P) and select `Dev Containers: Reopen in Container`
+This repository comes with a pre-configured [devcontainer](./devcontainer/devcontainer.json) that you can use to get started.
 
-You are all set.
+This is a Linux container based on an official Docker image built by the TurboML team, that comes with the TurboML Python SDK pre-installed. So you can start coding right away.
 
-### 1. Set up the feature pipeline
+> **Why use a devcontainer?**
+>
+> Devcontainers are a powerful way to create a reproducible development environment. They allow
+> - easy cross-platform development, and
+> - are a great way to onboard new developers.
+
+To open the repository inside this dev devcontainer, you:
+
+- ```git clone this repository```
+- Reopen the repository in VSCode with the Dev Containers extension, either by
+  - running the command palette (Ctrl+Shift+P) and selecting `Dev Containers: Reopen in Container`
+    [IMAGE]
+  
+  - or by clicking on the `Dev Container` tab in the bottom left of the VSCode window and selecting `Reopen in Container`
+    [IMAGE]
+
+It will take a few minutes to download the Docker image and start the container. Once everything is ready, open a new terminal
+window and double-check you are in a devcontainer by running
+
+```bash
+$ uname -a
+```
+and you should see something like this:
+
+```bash
+Linux 1821e9cf7662 6.10.14-linuxkit #1 SMP Fri Nov 29 17:22:03 UTC 2024 x86_64 x86_64 x86_64 GNU/Linux
+```
+
+The devcontainer is just another Docker container running on your machine, so you can interact with it as you would do with any other Docker container. In particular, if you open Docker Desktop, you should see the devcontainer running.
+
+Here is mine:
 
 
-### 2. Deploy an online model with incremental training
+### 2. Add TurboML credentials to an `.env` file
+
+Copy the `.env.example` file into a new `.env` file
+
+```bash
+cp .env.example .env
+```
+
+and replace the placeholder with your own credentials.
+
+```.env
+TURBOML_BACKEND_URL="YOUR_BACKEND_URL_GOES_HERE"
+TURBOML_API_KEY="YOUR_API_KEY_GOES_HERE"
+```
+
+You can find them in the TurboML dashboard.
+
+![credentials](./media/credentials.png)
+
+
+
+### 1. Create a feature pipeline
+
+This is the first pipeline you need to build a real time ML system.
+
+To do this in TurboML, you first need to create a dataset object for your
+
+- features -> set of variables you use to generate predictions
+
+and
+
+- labels -> target variable you want to predict
+
+This is what the `create_datasets` function does.
+
+```python
+# setup_feature_pipeline.py
+transactions, labels = create_datasets(
+    transactions_dataset_name=config.transactions_dataset_name,
+    labels_dataset_name=config.labels_dataset_name,
+    n_samples=100,
+)
+```
+
+Once you have the dataset objects, you can define the feature engineering logic you want to apply on top of them:
+
+```python
+# setup_feature_pipeline.py
+define_feature_engineering(transactions)
+```
+
+All this logic is encapsulated in the `setup_feature_pipeline.py` file, that you can run with the following command:
+
+```bash
+make feature-pipeline
+```
+
+After running this command, you should see 2 feature groups in your dashboard:
+
+![feature groups](./media/feature_groups.png)
+
+
+### 2. Define and deploy a Machine Learning model
+
+Fraud patterns are not static, but evolve over time. Fraudsters are always coming up with new ways to defraud credit card companies, so your ML system needs to adapt
+to these changes, to keep up with the latest fraud trends.
+
+To accomplish this, you typically need to:
+
+- Use historical data to train a good initial model. This is often called, offline training.
+
+- Deploy this model either as a streaming job, or as a REST API, so it can start making predictions on new data.
+
+- Add monitoring to the model, so you can detect if it's performing poorly.
+
+- Update the model parameters incrementally as new pairs (input, label) come in. This technique is called online training, or incremental training. The updated model needs to be redeployed frequently, to keep up with the latest fraud trends.
+
+With TurboML, you save yourself the hassle of building all this infrastructure from scratch.
+
+Instead, you define the model training logic in Python, using the features and labels we created in the previous step, and TurboML will take care of
+
+- Deploying the model either as a streaming job, or as a REST API
+- Monitoring the model performance
+- Updating the model parameters incrementally
+
+All this is encapsulated in the `setup_model.py` file, that you can run with the following command:
+
+```bash
+make model
+```
+
+After running this command, you should see the model deployed in your dashboard:
+
+![model deployed](./media/model.png)
+
 
 ### 3. Generate live predictions
 
+Let's put our model to work. Let's start generating live data of transactions and labels, and see how the model performs.
+
+I'm using the `generate_live_data.py` script to generate live data. This script simulates a live stream of transactions and labels, and pushes them to the online datasets we created in the previous steps.
+
+```bash
+make live-data
+```
+
+In a real-world scenario, this data would come from your data sources, for example a Kafka topic or a database table.
+
+These are called `Connectors` in the TurboML platform.
+
+![connectors](./media/connectors.png)
+
 ### 4. Model monitoring
 
-### 5. Model comparion
+After running the previous command, you can check the model performance on the dashboard:
+
+![model performance](./media/model_outputs.png)
+
+
+### 5. Model comparison
+
+Typically, you will want to compare the performance of different models, to see which one performs better.
+
+You can easily do this by:
+
+- Updating the model_name in the `config.py` file -> e.g. `model_name = "fraud_detection_model_2"`
+- Running the `setup_model.py` script again
+- Comparing the performance of the new model with the old one on the TurboML dashboard.
 
 
 ## Next steps
@@ -139,5 +274,8 @@ You can build on top of this end-2-end example, by
 - improving the accuracy of the system with furter feature engineering and model tunning
 - plugging in your own real time data source
 
+## Wanna learn more Real World ML/MLOps?
+Subscribe for free to my newsletter to get notified when I publish new articles and courses:
 
-
+👉👉🏻👉🏼👉🏽👉🏾👉🏿 [Subscribe](https://paulabartabajo.substack.com/)
+👉👉🏻👉🏼👉🏽👉🏾👉🏿 [Courses](https://www.realworldml.net/courses)
