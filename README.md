@@ -11,7 +11,14 @@
 - [The problem](#the-problem)
 - [The solution](#the-solution)
 - [Steps](#steps)
-    - [Next steps](#next-steps)
+    - [1. Install the tools](#1-install-the-tools)
+    - [2. Set your TurboML credentials](#2-set-your-turboml-credentials)
+    - [3. Create a feature pipeline](#3-create-a-feature-pipeline)
+    - [4. Define and deploy a Machine Learning model](#4-define-and-deploy-a-machine-learning-model)
+    - [5. Generate live predictions](#5-generate-live-predictions)
+    - [6. Model monitoring](#6-model-monitoring)
+    - [7. Model comparison](#7-model-comparison)
+- [Now it is your turn](#now-it-is-your-turn)
 - [Wanna learn more Real World ML/MLOps?](#wanna-learn-more-real-world-mlmlops)
 
 ## What is this repo about?
@@ -116,10 +123,9 @@ To open the repository inside this dev devcontainer, you:
 - ```git clone this repository```
 - Reopen the repository in VSCode with the Dev Containers extension, either by
   - running the command palette (Ctrl+Shift+P) and selecting `Dev Containers: Reopen in Container`
-    [IMAGE]
   
   - or by clicking on the `Dev Container` tab in the bottom left of the VSCode window and selecting `Reopen in Container`
-    [IMAGE]
+    ![reopen in container](./media/reopen_in_container.png)
 
 It will take a few minutes to download the Docker image and start the container. Once everything is ready, open a new terminal
 window and double-check you are in a devcontainer by running
@@ -138,7 +144,7 @@ The devcontainer is just another Docker container running on your machine, so yo
 Here is mine:
 
 
-### 2. Add TurboML credentials to an `.env` file
+### 2. Set your TurboML credentials
 
 Copy the `.env.example` file into a new `.env` file
 
@@ -153,23 +159,20 @@ TURBOML_BACKEND_URL="YOUR_BACKEND_URL_GOES_HERE"
 TURBOML_API_KEY="YOUR_API_KEY_GOES_HERE"
 ```
 
-You can find them in the TurboML dashboard.
+To get these credentials, sign up for free at [TurboML](https://turboml.com/)
+and you will get a workspace with a backend URL and an API key.
 
 ![credentials](./media/credentials.png)
 
-
-
-### 1. Create a feature pipeline
+### 3. Create a feature pipeline
 
 This is the first pipeline you need to build a real time ML system.
 
 To do this in TurboML, you first need to create a dataset object for your
 
-- features -> set of variables you use to generate predictions
+- **features** -> set of variables you use to generate predictions, and
 
-and
-
-- labels -> target variable you want to predict
+- **labels** -> target variable you want to predict
 
 This is what the `create_datasets` function does.
 
@@ -200,7 +203,7 @@ After running this command, you should see 2 feature groups in your dashboard:
 ![feature groups](./media/feature_groups.png)
 
 
-### 2. Define and deploy a Machine Learning model
+### 4. Define and deploy a Machine Learning model
 
 Fraud patterns are not static, but evolve over time. Fraudsters are always coming up with new ways to defraud credit card companies, so your ML system needs to adapt
 to these changes, to keep up with the latest fraud trends.
@@ -234,30 +237,32 @@ After running this command, you should see the model deployed in your dashboard:
 ![model deployed](./media/model.png)
 
 
-### 3. Generate live predictions
+### 5. Generate live predictions
 
 Let's put our model to work. Let's start generating live data of transactions and labels, and see how the model performs.
 
-I'm using the `generate_live_data.py` script to generate live data. This script simulates a live stream of transactions and labels, and pushes them to the online datasets we created in the previous steps.
+I created a `generate_live_data.py` script to generate live data. This script samples historical data to simulate a live stream of transactions and labels, and pushes them to the online datasets we created in the previous steps.
 
 ```bash
 make live-data
 ```
 
-In a real-world scenario, this data would come from your data sources, for example a Kafka topic or a database table.
+> **What about real-world data?**
+> 
+> In a real-world scenario, this data would come from your data sources, for example a Kafka topic or a database table.
+> 
+> These are called `Connectors` in the TurboML platform.
+> 
+> ![connectors](./media/connectors.png)
 
-These are called `Connectors` in the TurboML platform.
-
-![connectors](./media/connectors.png)
-
-### 4. Model monitoring
+### 6. Model monitoring
 
 After running the previous command, you can check the model performance on the dashboard:
 
 ![model performance](./media/model_outputs.png)
 
 
-### 5. Model comparison
+### 7. Model comparison
 
 Typically, you will want to compare the performance of different models, to see which one performs better.
 
@@ -268,11 +273,17 @@ You can easily do this by:
 - Comparing the performance of the new model with the old one on the TurboML dashboard.
 
 
-## Next steps
-You can build on top of this end-2-end example, by    
+## Now it is your turn
+
+Sign up for free at [TurboML](https://turboml.com/) and build your own end-2-end real time ML system.
+
+You can build on top of this end-2-end example, for example:   
 
 - improving the accuracy of the system with furter feature engineering and model tunning
-- plugging in your own real time data source
+
+or, you can build your own end-2-end real time ML system, by plugging in your own real time data source.
+
+
 
 ## Wanna learn more Real World ML/MLOps?
 Subscribe for free to my newsletter to get notified when I publish new articles and courses:
