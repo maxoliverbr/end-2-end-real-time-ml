@@ -277,13 +277,13 @@ You can easily do this by:
 
 Sign up for free at [TurboML](https://turboml.com/) and build your own end-2-end real time ML system.
 
-You can build on top of this end-2-end example, for example:   
+- You can build on top of this example, for example, trying to improve the accuracy of the system with furter feature engineering and model tunning.
 
-- improving the accuracy of the system with furter feature engineering and model tunning
+or
 
-or, you can build your own end-2-end real time ML system, by plugging in your own real time data source.
+- You can build your own end-2-end real time ML system, by plugging in your own real time data source.
 
-
+BOOM!
 
 ## Wanna learn more Real World ML/MLOps?
 Subscribe for free to my newsletter to get notified when I publish new articles and courses:
